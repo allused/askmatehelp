@@ -2,9 +2,7 @@ from flask import Flask, render_template, redirect, request, url_for
 import data_handler
 from data_handler import QUESTION_DATA_FILE_PATH, question_header, ANSWER_DATA_FILE_PATH, answers_header, TEMPLATE_HEADER
 import util
-
 app = Flask(__name__)
-
 
 @app.route("/")
 def home():
@@ -32,13 +30,28 @@ def add_question():
 
     return render_template('add_question.html')
 
-@app.route('/answers')
-def answers(question_id=1):
+@app.route('/answers/<question_id>', methods=['GET', 'POST'])
+def answers(question_id):
+    temp_lst = []
     questions = data_handler.read_elements_csv(QUESTION_DATA_FILE_PATH, question_header)
     question_dict = data_handler.find_ids(questions, question_id)
     answers = data_handler.read_elements_csv(ANSWER_DATA_FILE_PATH, answers_header)
-    return render_template('answers.html', question=question_dict, answers=answers, )
 
+    if request.method == 'POST':
+        message = request.form['answer_message']
+        image = request.form['img']
+        answer_container = [data_handler.get_id(ANSWER_DATA_FILE_PATH),util.get_unix_time(),'0',question_id,message,]
+
+        for item in answer_container:
+            temp_lst.append(item)
+            if image:
+                temp_lst.append(image)
+        return redirect('/')
+
+
+
+
+    return render_template('answers.html', question=question_dict, answers=answers,)
 
 if __name__ == "__main__":
     app.run(
