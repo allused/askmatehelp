@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="answers_grid">
+    <div id="headers">
+        <div><h3>Question</h3></div>
+
+    </div>
+    <div id="question">
+
+        <textarea id="question_message" cols="50" rows="8" disabled>{{ question.message }}</textarea>
+
+
+    </div>
+</div>
+{% endblock %}
